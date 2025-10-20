@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Masuk — Zona (Secure Login)</title>
+    <title>Masuk — Zona (Kirim Pesan)</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
@@ -45,18 +45,22 @@
       .card {
         background: var(--card-bg);
         border-radius: 18px;
-        padding: 28px;
+        padding: 36px 28px;
         box-shadow: 0 18px 60px rgba(2, 6, 23, 0.75);
         border: 1px solid rgba(255, 255, 255, 0.03);
       }
 
+      /* logo img (replace src or use CSS background) */
       .logo {
-        width: 48px;
-        height: 48px;
+        width: 72px;
+        height: 72px;
         margin: 0 auto 10px;
-        border-radius: 10px;
-        background: linear-gradient(90deg, #ff4d6d, #8b5cf6);
+        border-radius: 12px;
+        display: block;
+        object-fit: cover;
+        background: linear-gradient(90deg, #ff4d6d, #8b5cf6); /* fallback */
       }
+
       h1.title {
         margin: 6px 0 8px;
         font-size: 22px;
@@ -79,8 +83,9 @@
         display: block;
         margin-bottom: 6px;
       }
+      input[type="text"],
       input[type="email"],
-      input[type="password"] {
+      textarea {
         width: 100%;
         padding: 12px 14px;
         border-radius: 8px;
@@ -91,10 +96,16 @@
         outline: none;
         transition: box-shadow 0.12s, border-color 0.12s;
       }
-      input::placeholder {
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+      input::placeholder,
+      textarea::placeholder {
         color: rgba(255, 255, 255, 0.42);
       }
-      input:focus {
+      input:focus,
+      textarea:focus {
         box-shadow: 0 8px 26px rgba(26, 115, 232, 0.1);
         border-color: rgba(26, 115, 232, 0.9);
       }
@@ -113,18 +124,6 @@
       .btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 18px 40px rgba(26, 115, 232, 0.12);
-      }
-
-      .row {
-        display: flex;
-        gap: 8px;
-      }
-      .btn.ghost {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        padding: 10px;
-        border-radius: 10px;
-        color: var(--muted);
       }
 
       .helper {
@@ -155,42 +154,40 @@
         z-index: 9999;
       }
 
-      .small {
-        font-size: 13px;
-        color: var(--muted);
+      .hp {
+        position: absolute;
+        left: -9999px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      } /* honeypot */
+      @media (max-width: 420px) {
+        .card {
+          padding: 28px 18px;
+        }
       }
     </style>
   </head>
   <body>
-    <main class="container" role="main" aria-labelledby="authTitle">
-      <section class="card" id="authCard" aria-label="Form autentikasi">
-        <div class="logo" aria-hidden="true"></div>
-        <h1 class="title" id="authTitle">Masuk / Daftar</h1>
-        <p class="sub">Masukkan email dan password untuk mengakses Zona</p>
+    <main class="container" role="main" aria-labelledby="centerLogin">
+      <section class="card" id="centerLogin" aria-label="Form kontak center">
+        <!-- 1) Cara masukkan logo: ganti src di <img> di bawah (contoh di instruksi) -->
+        <img
+          id="siteLogo"
+          class="logo"
+          src="logo-placeholder.png"
+          alt="Logo (ganti sendiri)"
+        />
+        <h1 class="title">Masuk</h1>
+        <p class="sub">Masukkan email dan pesan untuk menghubungi Zona</p>
 
-        <!-- Toggle Sign In / Sign Up -->
-        <div style="display: flex; gap: 8px; margin-bottom: 12px">
-          <button id="signInBtn" class="btn ghost" style="flex: 1">
-            Masuk
-          </button>
-          <button
-            id="signUpBtn"
-            class="btn"
-            style="
-              flex: 1;
-              background: linear-gradient(90deg, #06b6d4, #4f46e5);
-            "
-          >
-            Daftar
-          </button>
-        </div>
-
-        <!-- Form -->
-        <form id="authForm" autocomplete="on" novalidate>
+        <!-- Form: safe fields -->
+        <form id="contactForm" autocomplete="on" novalidate>
           <div class="field">
-            <label class="small" for="email">Email</label>
+            <label class="small" for="cem">Email</label>
             <input
-              id="email"
+              id="cem"
               name="email"
               type="email"
               placeholder="you@example.com"
@@ -198,176 +195,104 @@
             />
           </div>
           <div class="field">
-            <label class="small" for="password">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
+            <label class="small" for="message">Pesan</label>
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Tulis pesan atau catatan..."
               required
-            />
+            ></textarea>
           </div>
 
-          <button id="submitBtn" class="btn" type="submit">Masuk</button>
+          <!-- Honeypot for bots -->
+          <label class="hp"
+            >Jangan isi<input name="_honey" autocomplete="off"
+          /></label>
+
+          <button class="btn" type="submit" id="submitBtn">Selanjutnya</button>
         </form>
 
         <div class="helper">
           Dengan melanjutkan, Anda setuju untuk dihubungi via email.
         </div>
         <div class="links">
-          <a
-            href="#"
-            id="forgot"
-            style="color: var(--muted); text-decoration: none"
-            >Lupa password?</a
+          <a href="#" style="color: var(--muted); text-decoration: none"
+            >Butuh bantuan?</a
+          >
+          <a href="#" style="color: var(--muted); text-decoration: none"
+            >Buat akun</a
           >
         </div>
       </section>
     </main>
 
-    <div class="toast" id="toast">Tindakan selesai</div>
+    <div class="toast" id="toastCenter">Pesan terkirim</div>
 
-    <!-- Firebase SDK (v9 modular) -->
-    <script type="module">
-      // -------------- GANTI DENGAN FIREBASE CONFIG PROJECTMU --------------
-      // Dapatkan config di Firebase Console → Project settings → Your apps (Web)
-      const firebaseConfig = {
-        apiKey: "API_KEY_HERE",
-        authDomain: "PROJECT_ID.firebaseapp.com",
-        projectId: "PROJECT_ID",
-        appId: "APP_ID",
-        // optional fields:
-        // storageBucket, messagingSenderId, measurementId
-      };
-      // -------------------------------------------------------------------
+    <script>
+      (function () {
+        // GANTI INI jika perlu (Apps Script URL kamu)
+        const WEB_APP_URL =
+          "https://script.google.com/macros/s/AKfycbxeQ5NMSqbNRFwQreuevVKBC-frdSZzm0CYyUQnVoPofuzpTzD3mimigTcN4YxucWZPbQ/exec";
 
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-      import {
-        getAuth,
-        createUserWithEmailAndPassword,
-        signInWithEmailAndPassword,
-        sendPasswordResetEmail,
-        signOut,
-      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        const form = document.getElementById("contactForm");
+        const toast = document.getElementById("toastCenter");
+        const submitBtn = document.getElementById("submitBtn");
 
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-
-      // UI elements
-      const authForm = document.getElementById("authForm");
-      const submitBtn = document.getElementById("submitBtn");
-      const signInBtn = document.getElementById("signInBtn");
-      const signUpBtn = document.getElementById("signUpBtn");
-      const toast = document.getElementById("toast");
-      const forgot = document.getElementById("forgot");
-
-      let mode = "signin"; // or 'signup'
-      function showToast(msg = "Tindakan selesai") {
-        toast.textContent = msg;
-        toast.style.display = "block";
-        setTimeout(() => {
+        function showToast(msg = "Pesan terkirim") {
+          toast.textContent = msg;
+          toast.style.display = "block";
           toast.style.opacity = 1;
           setTimeout(() => {
             toast.style.opacity = 0;
-            setTimeout(() => (toast.style.display = "none"), 200);
-          }, 1800);
-        }, 10);
-      }
-
-      // Toggle UI
-      signInBtn.addEventListener("click", () => {
-        mode = "signin";
-        submitBtn.textContent = "Masuk";
-        signInBtn.classList.add("ghost");
-        signUpBtn.classList.remove("ghost");
-      });
-      signUpBtn.addEventListener("click", () => {
-        mode = "signup";
-        submitBtn.textContent = "Daftar";
-        signUpBtn.classList.add("ghost");
-        signInBtn.classList.remove("ghost");
-      });
-
-      // Form submit
-      authForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = authForm.email.value.trim();
-        const password = authForm.password.value.trim();
-        if (!email || !password) {
-          alert("Isi semua kolom.");
-          return;
+            setTimeout(() => (toast.style.display = "none"), 250);
+          }, 2200);
         }
 
-        submitBtn.disabled = true;
-        const origText = submitBtn.textContent;
-        submitBtn.textContent = mode === "signup" ? "Mendaftar..." : "Masuk...";
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const data = Object.fromEntries(new FormData(form).entries());
 
-        try {
-          if (mode === "signup") {
-            // register
-            const userCred = await createUserWithEmailAndPassword(
-              auth,
-              email,
-              password
-            );
-            showToast("Akun dibuat — email verif dikirim jika diaktifkan.");
-            // optionally send email verification here (requires email verification code)
-          } else {
-            // sign in
-            const userCred = await signInWithEmailAndPassword(
-              auth,
-              email,
-              password
-            );
-            showToast("Berhasil masuk — mengarahkan...");
-            // redirect or show protected area
-            setTimeout(() => {
-              window.location.href = "selesai.html";
-            }, 900);
+          // Honeypot check
+          if (data._honey) {
+            alert("Spam detected");
+            return;
           }
-        } catch (err) {
-          // friendly error messages
-          const msg =
-            err && err.code
-              ? firebaseErrorToMessage(err.code)
-              : err.message || "Terjadi kesalahan";
-          alert(msg);
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.textContent = origText;
-        }
-      });
 
-      // Password reset
-      forgot.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const email = authForm.email.value.trim();
-        if (!email) {
-          alert("Masukkan email untuk reset password.");
-          return;
-        }
-        try {
-          await sendPasswordResetEmail(auth, email);
-          showToast("Email reset password terkirim.");
-        } catch (err) {
-          alert(firebaseErrorToMessage(err.code || err.message));
-        }
-      });
+          // basic validation
+          if (!data.email || !data.message) {
+            alert("Isi semua kolom dulu.");
+            return;
+          }
 
-      // friendly firebase error mapping
-      function firebaseErrorToMessage(code) {
-        const map = {
-          "auth/email-already-in-use": "Email sudah terdaftar.",
-          "auth/invalid-email": "Format email tidak valid.",
-          "auth/weak-password": "Password terlalu lemah (min 6 karakter).",
-          "auth/user-not-found": "Akun tidak ditemukan.",
-          "auth/wrong-password": "Password salah.",
-          "auth/too-many-requests":
-            "Terlalu banyak percobaan. Coba lagi nanti.",
-        };
-        for (const k in map) if (code.indexOf(k) !== -1) return map[k];
-        return "Error: " + (code || "unknown");
-      }
+          submitBtn.disabled = true;
+          const orig = submitBtn.textContent;
+          submitBtn.textContent = "Mengirim...";
+
+          try {
+            const res = await fetch(WEB_APP_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: data.email,
+                message: data.message,
+              }),
+            });
+            const j = await res.json();
+            if (j && j.success) {
+              showToast("Pesan terkirim ✓");
+              form.reset();
+              // window.location.href = 'selesai.html'; // kalau mau redirect
+            } else {
+              alert("Gagal mengirim: " + (j && j.error ? j.error : "unknown"));
+            }
+          } catch (err) {
+            alert("Network error: " + err.message);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = orig;
+          }
+        });
+      })();
     </script>
   </body>
 </html>
